@@ -1,0 +1,2 @@
+include LICENSE AUTHORS.rst README.rst
+recursive-include media *.html *.txt *.xml *.po *.mo *.js
