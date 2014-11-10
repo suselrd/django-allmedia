@@ -73,7 +73,7 @@ class Image(Media):
                        self.content_object._meta.object_name.lower()),
             self.content_object.pk,
             filename)
-    image = models.ImageField(verbose_name=_('file'), upload_to=image_upload)
+    image = models.ImageField(verbose_name=_('file'), upload_to=image_upload, max_length=255)
 
 
 class Video(Media):
@@ -88,7 +88,7 @@ class Video(Media):
             self.content_object.pk,
             filename)
 
-    video = models.FileField(verbose_name=_('video'), upload_to=video_upload)
+    video = models.FileField(verbose_name=_('video'), upload_to=video_upload, max_length=255)
 
     def video_name(self):
         if self.video.name:

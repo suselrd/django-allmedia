@@ -8,9 +8,9 @@ def thumbnail_path(path, size, method):
     Returns the path for the resized image.
     """
 
-    dir, name = os.path.split(path)
+    directory, name = os.path.split(path)
     image_name, ext = name.rsplit('.', 1)
-    return os.path.join(dir, '%s_%s_%s.%s' % (image_name, method, size, MEDIA_IMAGE_EXTENSION))
+    return os.path.join(directory, '%s_%s_%s.%s' % (image_name, method, size, MEDIA_IMAGE_EXTENSION))
 
 
 def generate_thumbnail(path, size, method):
