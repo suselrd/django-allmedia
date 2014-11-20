@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 setup(
     name = "django-allmedia",
@@ -6,7 +6,7 @@ setup(
     author = "Susel Ruiz Duran",
     author_email = "suselrd@gmail.com",
     version = "0.1.0",
-    packages = ["media"],
+    packages = find_packages(),
     include_package_data=True,
     zip_safe=False,
     description = "All Media for Django (Images, Videos, Attachments)",
