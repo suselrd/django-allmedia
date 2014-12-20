@@ -182,3 +182,15 @@ class Attachment(models.Model):
     @property
     def filename(self):
         return os.path.split(self.attachment_file.name)[1]
+
+
+class AjaxFileUploaded(models.Model):
+    def ajax_file_upload(self, filename):
+        return 'site-%s/temp/ajax_files/%s/%s/%s' % (
+            settings.SITE_ID,
+            '%s_%s' % (self.content_object._meta.app_label,
+                       self.content_object._meta.object_name.lower()),
+            self.content_object.pk,
+            filename)
+
+    file = models.FileField(verbose_name=_('ajax_file'), max_length=255, upload_to=ajax_file_upload)

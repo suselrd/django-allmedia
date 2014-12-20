@@ -6,7 +6,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.forms.util import ErrorList
 from django.utils.datastructures import MultiValueDictKeyError
 from django.utils.translation import ugettext_lazy as _
-from .models import Media, MediaAlbum, Image, Video, MediaTag, Attachment
+from .models import Media, MediaAlbum, Image, Video, MediaTag, Attachment, AjaxFileUploaded
 
 
 class MediaForm(forms.ModelForm):
@@ -147,3 +147,13 @@ class AttachmentForm(forms.ModelForm):
         self.instance.content_type = ContentType.objects.get_for_model(obj)
         self.instance.object_id = obj.id
         super(AttachmentForm, self).save(*args, **kwargs)
+
+
+class AjaxFileUploadedForm(forms.ModelForm):
+
+    class Meta:
+        model = AjaxFileUploaded
+        fields = ('file',)
+
+    def save(self, request, obj, *args, **kwargs):
+        super(AjaxFileUploadedForm, self).save(*args, **kwargs)
