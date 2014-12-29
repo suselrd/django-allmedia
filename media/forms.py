@@ -6,6 +6,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.forms.util import ErrorList
 from django.utils.datastructures import MultiValueDictKeyError
 from django.utils.translation import ugettext_lazy as _
+from media.decorators import ajax_file_upload
 from .models import Media, MediaAlbum, Image, Video, MediaTag, Attachment, AjaxFileUploaded
 
 
@@ -77,6 +78,11 @@ class ImageForm(forms.ModelForm):
             return MediaTag.on_site.get_or_create(name=tag)[0].pk
 
 
+@ajax_file_upload(form_file_field_name="image")
+class ImageAjaxUploadForm(ImageForm):
+    pass
+
+
 class VideoForm(forms.ModelForm):
     """
     Form to add a video
@@ -126,6 +132,11 @@ class VideoForm(forms.ModelForm):
             return MediaTag.on_site.get_or_create(name=tag)[0].pk
 
 
+@ajax_file_upload(form_file_field_name="video")
+class VideoAjaxUploadForm(VideoForm):
+    pass
+
+
 class TagForm(forms.ModelForm):
     """
     Form to add a media tag
@@ -155,5 +166,6 @@ class AjaxFileUploadedForm(forms.ModelForm):
         model = AjaxFileUploaded
         fields = ('file',)
 
-    def save(self, request, obj, *args, **kwargs):
-        super(AjaxFileUploadedForm, self).save(*args, **kwargs)
+    def save(self, commit=True):
+        return super(AjaxFileUploadedForm, self).save(commit)
+

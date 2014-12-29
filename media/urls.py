@@ -9,7 +9,7 @@ urlpatterns = patterns('',
     url(
         r'^upload/file/$',
         login_required(HandleAjaxFileUploadedView.as_view()),
-        name="upload_file"
+        name="ajax_upload_file"
     ),
 
 )

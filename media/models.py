@@ -9,6 +9,7 @@ from django.contrib.sites.managers import CurrentSiteManager
 from django.db import models
 from django.db.models.signals import pre_save
 from django.utils.translation import ugettext_lazy as _
+from .signals import pre_ajax_file_save
 
 
 class MediaTag(models.Model):
@@ -131,8 +132,12 @@ def set_content_after_album_content(instance, **kwargs):
         instance.content_type_id = album.content_type_id
         instance.object_pk = album.object_pk
 
-# Connecting to Image pre_save signal
-pre_save.connect(set_content_after_album_content, sender=Image, dispatch_uid='set_content_after_album_content')
+# Connecting to Image and Video pre_save signal
+pre_save.connect(set_content_after_album_content, sender=Image, dispatch_uid='set_image_content_after_album_content')
+pre_save.connect(set_content_after_album_content, sender=Video, dispatch_uid='set_video_content_after_album_content')
+# Connecting to Image and Video pre_ajax_file_save signal
+pre_ajax_file_save.connect(set_content_after_album_content, sender=Image, dispatch_uid='set_ajax_image_content_after_album_content')
+pre_ajax_file_save.connect(set_content_after_album_content, sender=Video, dispatch_uid='set_ajax_video_content_after_album_content')
 
 
 class AttachmentManagerMixin(object):
@@ -186,11 +191,11 @@ class Attachment(models.Model):
 
 class AjaxFileUploaded(models.Model):
     def ajax_file_upload(self, filename):
-        return 'site-%s/temp/ajax_files/%s/%s/%s' % (
+        return 'site-%s/temp/ajax_files/%s/%s' % (
             settings.SITE_ID,
-            '%s_%s' % (self.content_object._meta.app_label,
-                       self.content_object._meta.object_name.lower()),
-            self.content_object.pk,
-            filename)
+            '%s_%s' % (self._meta.app_label, self._meta.object_name.lower()),
+            filename
+        )
 
     file = models.FileField(verbose_name=_('ajax_file'), max_length=255, upload_to=ajax_file_upload)
+    date = models.DateTimeField(auto_now=True)
