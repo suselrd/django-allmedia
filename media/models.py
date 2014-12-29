@@ -1,5 +1,6 @@
 # coding=utf-8
 import os
+from datetime import datetime
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.contenttypes import generic
@@ -198,4 +199,4 @@ class AjaxFileUploaded(models.Model):
         )
 
     file = models.FileField(verbose_name=_('ajax_file'), max_length=255, upload_to=ajax_file_upload)
-    date = models.DateTimeField(auto_now=True)
+    date = models.DateTimeField(auto_now=True, default=datetime.now())
