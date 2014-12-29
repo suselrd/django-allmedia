@@ -10,6 +10,11 @@ Image thumbnail processing.
 
 Changelog
 =========
+0.2.0
+-----
+
+Support for ajax file uploads
+
 0.1.0
 -----
 
