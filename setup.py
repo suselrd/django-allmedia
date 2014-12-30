@@ -2,10 +2,10 @@ from setuptools import setup, find_packages
 
 setup(
     name = "django-allmedia",
-    #url = "http://github.com/suselrd/django-allmedia/",
+    url = "http://github.com/suselrd/django-allmedia/",
     author = "Susel Ruiz Duran",
     author_email = "suselrd@gmail.com",
-    version = "0.1.0",
+    version = "0.2.0",
     packages = find_packages(),
     include_package_data=True,
     zip_safe=False,
