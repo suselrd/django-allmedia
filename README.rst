@@ -10,6 +10,11 @@ Image thumbnail processing.
 
 Changelog
 =========
+0.2.1
+-----
+
+Support for on demand thumbnail generation (if indicated by settings)
+
 0.2.0
 -----
 

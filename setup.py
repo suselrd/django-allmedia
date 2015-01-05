@@ -5,7 +5,7 @@ setup(
     url = "http://github.com/suselrd/django-allmedia/",
     author = "Susel Ruiz Duran",
     author_email = "suselrd@gmail.com",
-    version = "0.2.0",
+    version = "0.2.1",
     packages = find_packages(),
     include_package_data=True,
     zip_safe=False,

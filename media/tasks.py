@@ -17,6 +17,12 @@ def create_thumbnails(image_path, usage):
         logger.exception(e)
 
 
+@shared_task(name='media.create_thumbnail')
+def create_thumbnail(image_path, size, method):
+    from .utils import generate_thumbnail
+    generate_thumbnail(image_path, size, method)
+
+
 @shared_task(name='media.clean_temp_files')
 def clean_temp_files():
     from .models import AjaxFileUploaded
