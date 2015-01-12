@@ -7,7 +7,7 @@ from .models import AjaxFileUploaded
 from .signals import pre_ajax_file_save
 
 
-def ajax_file_upload(form_file_field_name="file", model_file_field_name=None):
+def ajax_file_upload(form_file_field_name="file", model_file_field_name=None, content_type="all"):
 
     def decorator(cls):
         from django import forms
@@ -28,6 +28,8 @@ def ajax_file_upload(form_file_field_name="file", model_file_field_name=None):
             )
              # set target field as non required
             self.fields[form_file_field_name].required = False
+            # to render an attribute with the content type
+            self.fields[form_file_field_name].widget.attrs.update({"data-contentvalidation": content_type})
 
         setattr(cls, '__init__', __init__)
 

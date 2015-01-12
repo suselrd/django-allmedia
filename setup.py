@@ -5,7 +5,7 @@ setup(
     url = "http://github.com/suselrd/django-allmedia/",
     author = "Susel Ruiz Duran",
     author_email = "suselrd@gmail.com",
-    version = "0.2.1",
+    version = "0.3.0",
     packages = find_packages(),
     include_package_data=True,
     zip_safe=False,
@@ -17,7 +17,8 @@ setup(
                       'anyjson==0.3.3',
                       'kombu==3.0.15',
                       'celery==3.1.4',
-                      'Pillow'],
+                      'Pillow',
+                      'python-magic==0.4.6'],
     classifiers = [
         "Programming Language :: Python",
         "Programming Language :: Python :: 2.6",
