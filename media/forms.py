@@ -148,6 +148,7 @@ class TagForm(forms.ModelForm):
         fields = ('name',)
 
 
+@ajax_file_upload(form_file_field_name="attachment_file", content_type="all")
 class AttachmentForm(forms.ModelForm):
     attachment_file = forms.FileField(label=_('Upload attachment'))
 

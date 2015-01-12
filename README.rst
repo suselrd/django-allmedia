@@ -10,6 +10,11 @@ Image thumbnail processing.
 
 Changelog
 =========
+0.3.0
+-----
+
+Support for file validations by js and django
+
 0.2.0
 -----
 
@@ -47,3 +52,5 @@ Usage
     In code:
     When u need to execute the thumbs generation, just call the create_thumbnails function (passing in the image_path and usage params).
     This may be done either in synchronous or asynchronous way (as a celery task).
+
+5. If you want to use (Ajax Upload and File Validations), you need to use also bootstrap file input component and jQuery.
