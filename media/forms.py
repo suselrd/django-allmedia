@@ -6,7 +6,9 @@ from django.contrib.contenttypes.models import ContentType
 from django.forms.util import ErrorList
 from django.utils.datastructures import MultiValueDictKeyError
 from django.utils.translation import ugettext_lazy as _
-from media.decorators import ajax_file_upload
+from . import settings
+from .validators import FileFieldValidator
+from .decorators import ajax_file_upload
 from .models import Media, MediaAlbum, Image, Video, MediaTag, Attachment, AjaxFileUploaded
 
 
@@ -78,7 +80,7 @@ class ImageForm(forms.ModelForm):
             return MediaTag.on_site.get_or_create(name=tag)[0].pk
 
 
-@ajax_file_upload(form_file_field_name="image")
+@ajax_file_upload(form_file_field_name="image", content_type="image")
 class ImageAjaxUploadForm(ImageForm):
     pass
 
@@ -132,7 +134,7 @@ class VideoForm(forms.ModelForm):
             return MediaTag.on_site.get_or_create(name=tag)[0].pk
 
 
-@ajax_file_upload(form_file_field_name="video")
+@ajax_file_upload(form_file_field_name="video", content_type="video")
 class VideoAjaxUploadForm(VideoForm):
     pass
 
@@ -166,6 +168,12 @@ class AjaxFileUploadedForm(forms.ModelForm):
         model = AjaxFileUploaded
         fields = ('file',)
 
-    def save(self, commit=True):
-        return super(AjaxFileUploadedForm, self).save(commit)
-
+    def __init__(self, data=None, files=None, auto_id='id_%s', prefix=None, initial=None, error_class=ErrorList,
+                 label_suffix=None, empty_permitted=False, instance=None, content="all"):
+        super(AjaxFileUploadedForm, self).__init__(data, files, auto_id, prefix, initial, error_class, label_suffix,
+                                                   empty_permitted, instance)
+        # setting file validators
+        self.fields['file'].validators.append(FileFieldValidator(
+            mime_types=settings.MEDIA_STATICFILES_FORMATS[content]['types'],
+            max_size=settings.MEDIA_STATICFILES_FORMATS[content]['size']
+        ))
