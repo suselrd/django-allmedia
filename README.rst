@@ -15,6 +15,11 @@ Changelog
 
 Support for file validations by js and django
 
+0.2.1
+-----
+
+Support for on demand thumbnail generation (if indicated by settings)
+
 0.2.0
 -----
 
