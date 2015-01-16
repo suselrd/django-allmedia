@@ -10,6 +10,11 @@ Image thumbnail processing.
 
 Changelog
 =========
+0.3.1
+-----
+
+Allow decorated model forms to have additional kwargs (besides 'commit') if overwritten.
+
 0.3.0
 -----
 

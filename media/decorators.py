@@ -68,13 +68,13 @@ def ajax_file_upload(form_file_field_name="file", model_file_field_name=None, co
         # save method
         normal_save_method = getattr(cls, 'save')
 
-        def save(self, commit=True):
+        def save(self, commit=True, **kwargs):
             # gets the temp_file_id
             temp_file_id = self.cleaned_data.get('temp_file_id', False)
             if temp_file_id:
                 try:
                     temp_file = AjaxFileUploaded.objects.get(pk=temp_file_id)
-                    instance = normal_save_method(self, commit=False)
+                    instance = normal_save_method(self, commit=False, **kwargs)
                     # set a new attribute temp_file to the form instance
                     setattr(instance, "temp_file", temp_file)
 
@@ -83,11 +83,11 @@ def ajax_file_upload(form_file_field_name="file", model_file_field_name=None, co
 
                     return instance
                 except AjaxFileUploaded.DoesNotExist:
-                    return normal_save_method(self, commit)
+                    return normal_save_method(self, commit, **kwargs)
                 except Exception as e:
                     raise e
             else:
-                return normal_save_method(self, commit)
+                return normal_save_method(self, commit, **kwargs)
 
         setattr(cls, 'save', save)
 
