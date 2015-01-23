@@ -163,7 +163,7 @@ class AttachmentForm(forms.ModelForm):
 
 
 @ajax_file_upload(form_file_field_name="attachment_file", content_type="all")
-class AttachmentAjaxUploadForm(forms.ModelForm):
+class AttachmentAjaxUploadForm(AttachmentForm):
     pass
 
 
