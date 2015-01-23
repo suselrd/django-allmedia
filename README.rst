@@ -10,6 +10,12 @@ Image thumbnail processing.
 
 Changelog
 =========
+0.3.2
+-----
+
+Calling form method save_m2m to fix bug.
+Implemented form class AttachmentAjaxUploadForm
+
 0.3.1
 -----
 
