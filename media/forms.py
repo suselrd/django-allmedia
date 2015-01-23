@@ -148,7 +148,6 @@ class TagForm(forms.ModelForm):
         fields = ('name',)
 
 
-@ajax_file_upload(form_file_field_name="attachment_file", content_type="all")
 class AttachmentForm(forms.ModelForm):
     attachment_file = forms.FileField(label=_('Upload attachment'))
 
@@ -161,6 +160,11 @@ class AttachmentForm(forms.ModelForm):
         self.instance.content_type = ContentType.objects.get_for_model(obj)
         self.instance.object_id = obj.id
         super(AttachmentForm, self).save(*args, **kwargs)
+
+
+@ajax_file_upload(form_file_field_name="attachment_file", content_type="all")
+class AttachmentAjaxUploadForm(forms.ModelForm):
+    pass
 
 
 class AjaxFileUploadedForm(forms.ModelForm):
