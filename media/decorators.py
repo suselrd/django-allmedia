@@ -80,6 +80,7 @@ def ajax_file_upload(form_file_field_name="file", model_file_field_name=None, co
 
                     if commit:
                         instance.save()
+                        self.save_m2m()
 
                     return instance
                 except AjaxFileUploaded.DoesNotExist:

@@ -6,6 +6,8 @@ from django.contrib.contenttypes.models import ContentType
 from django.forms.util import ErrorList
 from django.utils.datastructures import MultiValueDictKeyError
 from django.utils.translation import ugettext_lazy as _
+from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
 from . import settings
 from .validators import FileFieldValidator
 from .decorators import ajax_file_upload
@@ -148,7 +150,6 @@ class TagForm(forms.ModelForm):
         fields = ('name',)
 
 
-@ajax_file_upload(form_file_field_name="attachment_file", content_type="all")
 class AttachmentForm(forms.ModelForm):
     attachment_file = forms.FileField(label=_('Upload attachment'))
 
@@ -161,6 +162,32 @@ class AttachmentForm(forms.ModelForm):
         self.instance.content_type = ContentType.objects.get_for_model(obj)
         self.instance.object_id = obj.id
         super(AttachmentForm, self).save(*args, **kwargs)
+
+
+@ajax_file_upload(form_file_field_name="attachment_file", content_type="all")
+class AttachmentAjaxUploadForm(forms.ModelForm):
+    attachment_file = forms.FileField(label=_('Upload attachment'))
+    creator = forms.IntegerField(widget=forms.HiddenInput())
+
+    class Meta:
+        model = Attachment
+        fields = ('attachment_file',)
+
+    def clean(self):
+        cleaned_data = super(AttachmentAjaxUploadForm, self).clean()
+        try:
+            creator_id = cleaned_data.get('creator', None)
+            self.instance_creator = User.objects.get(pk=creator_id)
+        except User.DoesNotExist:
+            raise ValidationError(_(u"No se ha encontrado Usuario con el identificador '%(id)'.") % {'id': creator_id})
+
+        return cleaned_data
+
+    def save(self, commit=True):
+        object = super(AttachmentAjaxUploadForm, self).save(commit=False)
+        object.creator = self.instance_creator
+        # this object is saved in false and returned in order to add the content_type in the view
+        return object
 
 
 class AjaxFileUploadedForm(forms.ModelForm):
