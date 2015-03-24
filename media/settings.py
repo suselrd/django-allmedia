@@ -1,6 +1,19 @@
 # coding=utf-8
 from django.conf import settings
 
+MEDIA_LOCATIONS = getattr(settings, 'MEDIA_LOCATIONS', {
+    "image": {
+        "default": "site-%(site)s/photos/%(model)s/%(pk)s/%(filename)s"
+    },
+    "video": {
+        "default": "site-%(site)s/videos/%(model)s/%(pk)s/%(filename)s"
+    },
+    "docs": {
+        "default": "site-%(site)s/attachments/%(model)s/%(pk)s/%(filename)s"
+    }
+})
+
+
 MEDIA_IMAGE_FORMAT = getattr(settings, 'MEDIA_IMAGE_FORMAT', 'JPEG')
 MEDIA_IMAGE_EXTENSION = getattr(settings, 'MEDIA_IMAGE_FORMAT', 'jpg')
 MEDIA_IMAGE_QUALITY = getattr(settings, 'MEDIA_IMAGE_FORMAT', 75)

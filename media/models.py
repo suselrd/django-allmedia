@@ -10,6 +10,7 @@ from django.contrib.sites.managers import CurrentSiteManager
 from django.db import models
 from django.db.models.signals import pre_save
 from django.utils.translation import ugettext_lazy as _
+from .settings import MEDIA_LOCATIONS
 from .signals import pre_ajax_file_save
 
 
@@ -34,6 +35,9 @@ class Media(models.Model):
                                      related_name="content_type_set_for_%(class)s")
     object_pk = models.TextField(_('object ID'))
     content_object = generic.GenericForeignKey(ct_field="content_type", fk_field="object_pk")
+
+    content_type_label = models.CharField(max_length=255, blank=True)
+
 
     caption = models.CharField(max_length=200)
     album = models.ForeignKey('MediaAlbum', verbose_name=_('album'), related_name='%(class)s_list', null=True,
@@ -63,19 +67,35 @@ class Media(models.Model):
     def tag_list(self, sep=", "):
         return sep.join(self.tags.all())
 
+    def location_template(self, file_type):
+        model = '%s.%s' % (self.content_object._meta.app_label, self.content_object._meta.object_name.lower())
+        templates = MEDIA_LOCATIONS.setdefault(file_type, {})
+        return templates.get(model, templates.get('default'))
+
+
+def media_pre_save_handler(instance, raw, **kwargs):
+    if instance.content_type_id:
+        instance.content_type_label = ".".join(ContentType.objects.get(pk=instance.content_type_id).natural_key())
+    if not instance.content_type_id and instance.content_type_label:
+        app_label, model = instance.content_type_label.split('.')
+        instance.content_type = ContentType.objects.get_by_natural_key(app_label, model)
+
 
 class Image(Media):
     """
     Represents and image.
     """
     def image_upload(self, filename):
-        return 'site-%s/photos/%s/%s/%s' % (
-            settings.SITE_ID,
-            '%s_%s' % (self.content_object._meta.app_label,
+        return self.location_template('image') % {
+            "site": settings.SITE_ID,
+            "model": '%s_%s' % (self.content_object._meta.app_label,
                        self.content_object._meta.object_name.lower()),
-            self.content_object.pk,
-            filename)
+            "pk": self.content_object.pk,
+            "filename": filename
+        }
     image = models.ImageField(verbose_name=_('file'), upload_to=image_upload, max_length=255)
+
+pre_save.connect(media_pre_save_handler, sender=Image, dispatch_uid='image_pre_save')
 
 
 class Video(Media):
@@ -83,12 +103,13 @@ class Video(Media):
     Represents a video.
     """
     def video_upload(self, filename):
-        return 'site-%s/videos/%s/%s/%s' % (
-            settings.SITE_ID,
-            '%s_%s' % (self.content_object._meta.app_label,
+        return self.location_template('video') % {
+            "site": settings.SITE_ID,
+            "model": '%s_%s' % (self.content_object._meta.app_label,
                        self.content_object._meta.object_name.lower()),
-            self.content_object.pk,
-            filename)
+            "pk": self.content_object.pk,
+            "filename": filename
+        }
 
     video = models.FileField(verbose_name=_('video'), upload_to=video_upload, max_length=255)
 
@@ -96,6 +117,8 @@ class Video(Media):
         if self.video.name:
             return self.video.name.split('/').pop()
         return ""
+
+pre_save.connect(media_pre_save_handler, sender=Video, dispatch_uid='video_pre_save')
 
 
 class MediaAlbum(models.Model):
@@ -158,8 +181,13 @@ class CurrentSiteAttachmentManager(CurrentSiteManager, AttachmentManagerMixin):
 
 class Attachment(models.Model):
 
+    def location_template(self):
+        model = '%s.%s' % (self.content_object._meta.app_label, self.content_object._meta.object_name.lower())
+        templates = MEDIA_LOCATIONS.setdefault('docs', {})
+        return templates.get(model, templates.get('default'))
+
     def attachment_upload(self, filename):
-        return 'site-%s/attachments/%s/%s/%s' % (
+        return self.location_template() % (
             settings.SITE_ID,
             '%s_%s' % (self.content_object._meta.app_label,
                        self.content_object._meta.object_name.lower()),
