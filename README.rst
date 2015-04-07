@@ -10,11 +10,15 @@ Image thumbnail processing.
 
 Changelog
 =========
+0.3.4
+-----
+
+Fix in 'upload-to' configuration usage for docs.
+
+
 0.3.3
 -----
 
-Added capability to load media from fixtures, specifying content_type_label (app_label.model)
-instead of a ContentType instance pk.
 Allowed 'upload-to' configuration for media and docs.
 
 
