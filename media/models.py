@@ -73,11 +73,7 @@ class Media(models.Model):
 
 
 def media_pre_save_handler(instance, raw, **kwargs):
-    if instance.content_type_id:
-        instance.content_type_label = ".".join(ContentType.objects.get(pk=instance.content_type_id).natural_key())
-    if not instance.content_type_id and instance.content_type_label:
-        app_label, model = instance.content_type_label.split('.')
-        instance.content_type = ContentType.objects.get_by_natural_key(app_label, model)
+    instance.content_type_label = ".".join(ContentType.objects.get(pk=instance.content_type_id).natural_key())
 
 
 class Image(Media):
@@ -186,12 +182,12 @@ class Attachment(models.Model):
         return templates.get(model, templates.get('default'))
 
     def attachment_upload(self, filename):
-        return self.location_template() % (
-            settings.SITE_ID,
-            '%s_%s' % (self.content_object._meta.app_label,
-                       self.content_object._meta.object_name.lower()),
-            self.content_object.pk,
-            filename)
+        return self.location_template() % {
+            "site": settings.SITE_ID,
+            "model": '%s_%s' % (self.content_object._meta.app_label, self.content_object._meta.object_name.lower()),
+            "pk": self.content_object.pk,
+            "filename": filename
+        }
 
     content_type = models.ForeignKey(ContentType)
     object_id = models.PositiveIntegerField()
