@@ -46,8 +46,7 @@ class Media(models.Model):
 
     private_media = models.BooleanField(_(u"private"), default=False)
 
-    tags = models.ManyToManyField(MediaTag, verbose_name=_(u"tags"), related_name="%(class)s_set", null=True,
-                                  blank=True)
+    tags = models.ManyToManyField(MediaTag, verbose_name=_(u"tags"), related_name="%(class)s_set", blank=True)
 
     created = models.DateTimeField(_('created'), auto_now_add=True)
     modified = models.DateTimeField(_('modified'), auto_now=True)
@@ -227,4 +226,4 @@ class AjaxFileUploaded(models.Model):
         )
 
     file = models.FileField(verbose_name=_('ajax_file'), max_length=255, upload_to=ajax_file_upload)
-    date = models.DateTimeField(auto_now=True, default=datetime.now())
+    date = models.DateTimeField(auto_now=True)

@@ -10,6 +10,12 @@ Image thumbnail processing.
 
 Changelog
 =========
+0.3.4
+-----
+
+Fixes for compatibility with Django 1.8.
+
+
 0.3.3
 -----
 
